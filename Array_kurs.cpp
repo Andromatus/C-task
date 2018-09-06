@@ -9,172 +9,172 @@ using namespace std;
 template <typename ArrayType>
 struct Array {
 public:
-    Array(); // конструктор по умолчанию
-    Array(const int size); // конструктор с параметром
-    Array(const Array &); // конструктор копирования
-    virtual ~Array(); // виртуальный деструктор
+    Array(); 
+    Array(const int size); 
+    Array(const Array &); 
+    virtual ~Array(); 
      
-    void insert(const int index, const ArrayType value); // вставить элемент по индексу
-    void append(const Array<ArrayType> &); // добавить другой массив
-    void resize(const int size); // размер массив
-    void remove(const int index); // удалить элемент по индексу
-    void clear(); // очистить элемент массива
-    int getSize() const; // получить текущий размер массива
+    void insert(const int index, const ArrayType value); 
+    void append(const Array<ArrayType> &); 
+    void resize(const int size); 
+    void remove(const int index); 
+    void clear(); 
+    int getSize() const; 
      
-    ArrayType &operator[] (const int index); //получить элемент по индексу для изменения значения
-    const ArrayType &operator[] (const int index) const; // получить только для чтения элемент по индексу
+    ArrayType &operator[] (const int index); 
+    const ArrayType &operator[] (const int index) const; 
  
-    const Array<ArrayType> &operator = (const Array<ArrayType> &); // установить другой массив
+    const Array<ArrayType> &operator = (const Array<ArrayType> &); 
      
 protected:
     ArrayType *array; 
     int currentSize;
 private:    
  
-    void shiftLeft(int from, int to); // сворачивает налево для операции удаления
-    void shiftRight(int from, int to); // перевод права на операции удаления
+    void shiftLeft(int from, int to); 
+    void shiftRight(int from, int to); 
 };
- // конструктор по умолчанию
+ 
 template <typename ArrayType>
 Array<ArrayType>::Array() {
-    currentSize = 0;	//обнуляем размер
-	array=NULL;			//и указатель на массив
+    currentSize = 0;	
+	array=NULL;			
 }
-// конструктор с параметром
+
 template <typename ArrayType>
 Array<ArrayType>::Array(const int size) {
-    currentSize = 0;	//обнуляем размер
-	array=NULL;			//и указатель на массив
-    resize(size);		//Задаем размер
+    currentSize = 0;	
+	array=NULL;			
+    resize(size);		
 }
-// конструктор копирования 
+
 template <typename ArrayType>
 Array<ArrayType>::Array(const Array &object) {
-    currentSize = 0;	//обнуляем размер
-	array=NULL;			//и указатель на массив
-    *this = object;		//Копируем массив
+    currentSize = 0;	
+	array=NULL;			
+    *this = object;		
 }
-// виртуальный деструктор 
+
 template <typename ArrayType>
 Array<ArrayType>::~Array() {
-    if (array) {		//Если массив выделен
-        free(array);	//освобождаем его
+    if (array) {		
+        free(array);	
     }
 }
-// добавить другой массив 
+
 template <typename ArrayType>
 void Array<ArrayType>::append(const Array<ArrayType> &object) {
-    int lastIndex = getSize();	//получить размер текущего массива
-    resize(lastIndex + object.getSize());		//изменить его размер с учетом нового
-    for (int i = 0; i < object.getSize(); i++) {	//добавить элементы второго массива
-        array[lastIndex] = object[i];				//к текущему
+    int lastIndex = getSize();	
+    resize(lastIndex + object.getSize());		
+    for (int i = 0; i < object.getSize(); i++) {	
+        array[lastIndex] = object[i];				
         lastIndex++;
     }
 }
-// вставить элемент по индексу 
+
 template <typename ArrayType>
 void Array<ArrayType>::insert(const int index, const ArrayType value) {
-    if (index < currentSize)	//Если индекс меньше размера массива
+    if (index < currentSize)	
     {
-        resize(currentSize+1);	//То увеличиваем массив на 1
-        shiftRight(index, currentSize-1);	//сдвигаем часть после вставки вправо
+        resize(currentSize+1);	
+        shiftRight(index, currentSize-1);	
     } else {
-        resize(index + 1);		//Если индекс больше или равен размеру увеличиваем массив, чтобы можно было вставить индекс
+        resize(index + 1);		
     }
-    array[index] = value;		//вставляем элемент
+    array[index] = value;		
 }
- //изменение размера массива
+ 
 template <typename ArrayType>
 void Array<ArrayType>::resize(const int size) 
 {
-    if (size == currentSize)	//Если размер тот же
-        return;					//то выйти
-    if (size == 0)				//если он стал=0
-       array = (ArrayType *) malloc(sizeof(ArrayType));	//выделить 1 элемент
+    if (size == currentSize)	
+        return;					
+    if (size == 0)				
+       array = (ArrayType *) malloc(sizeof(ArrayType));	
     else
-       array = (ArrayType *) realloc(array, size * sizeof(ArrayType));	//иначе изменяем размер по кол-ву элементов
-    currentSize = size;		//запомнить новый размер массива
-}
- // удалить элемент по индексу
-template <typename ArrayType>
-void Array<ArrayType>::remove(const int index) {
-    if (index >= 0 && index < currentSize) {	//если индекс в допустимых пределах
-        currentSize--;					//уменьшаем размемр массива
-        shiftLeft(index, currentSize);	//слвигаем массив влево
-    }
-}
- // очистить массив
-template <typename ArrayType>
-void Array<ArrayType>::clear() {
-    for (int i = 0; i < currentSize; i++)	//цикл по элементам массива
-        array[i] = ArrayType();				//очистка
+       array = (ArrayType *) realloc(array, size * sizeof(ArrayType));	
+    currentSize = size;		
 }
  
-// сворачивает налево для операции удаления 
+template <typename ArrayType>
+void Array<ArrayType>::remove(const int index) {
+    if (index >= 0 && index < currentSize) {	
+        currentSize--;					
+        shiftLeft(index, currentSize);	
+    }
+}
+ 
+template <typename ArrayType>
+void Array<ArrayType>::clear() {
+    for (int i = 0; i < currentSize; i++)	
+        array[i] = ArrayType();				
+}
+ 
+
 template <typename ArrayType>
 void Array<ArrayType>::shiftLeft(int from, int to) {
-    for (int i = from; i < to; i++) {	//Цикл перестановки элементов слева направо
+    for (int i = from; i < to; i++) {	
         array[i] = array[i + 1];
     }
 }
-//сдвиг вправо для вставки 
+
 template <typename ArrayType>
 void Array<ArrayType>::shiftRight(int from, int to) {
-    for (int i = to; i >= from; i--) {	//Цикл перестановки элементов справа налево
+    for (int i = to; i >= from; i--) {	
         array[i] = array[i - 1];
     }
 }
- //получить размер массива
+ 
 template <typename ArrayType>
 int Array<ArrayType>::getSize() const {
-    return currentSize;	//вернуть размер
+    return currentSize;	
 }
- //получить элемент по индексу для изменения значения
+ 
 template <typename ArrayType>
 ArrayType &Array<ArrayType>::operator[](const int index) {
     return array[index];	
 }
-// получить только для чтения элемент по индексу 
+
 template <typename ArrayType>
 const ArrayType &Array<ArrayType>::operator[](const int index) const {
     return array[index];
 }
-//поместить один массив в другой 
+
 template <typename ArrayType>
 const Array<ArrayType> &Array<ArrayType>::operator = (const Array<ArrayType> &object) {
-    resize(object.getSize());	//Изменить размер меняемого массива
-    for (int i = 0; i < currentSize; i++) {	//Перенос значений в новый массив
+    resize(object.getSize());	
+    for (int i = 0; i < currentSize; i++) {	
         array[i] = object[i];
     }
-    return *this;	//вернуть указатель на измененный массив
+    return *this;	
 }
-//вывод массива 
+
 template <typename ArrayType>
 std::ostream &operator << (std::ostream &stream, const Array<ArrayType> &array) {
-    for (int i = 0; i < array.getSize(); i++) { //Цикл по элементам массива
-        std::cout << array[i] << " ";	//вывести очередной элемент
+    for (int i = 0; i < array.getSize(); i++) { 
+        std::cout << array[i] << " ";	
     }
     return stream;
 }
 
-struct MArray //объявление структуры массив
+struct MArray 
 {
-	//--------элементы данные--------
-	int *Arr; //указатель (адрес начала памяти, выделенной для массива)
-	int Size; //количество элементов
-	//------------"Установка" значений элементов-данных------------
+	
+	int *Arr; 
+	int Size; 
+	
 	void SetArr(int n)
 	{
-		Arr=new int[n]; //выделение памяти
-		Size=n; //определение количества
+		Arr=new int[n]; 
+		Size=n; 
 	}
-	//---------Конструктор по умолчанию, выделяем память под 10 элементов---------
+	
 	MArray(int num=10)
 	{
 		SetArr (num);
 	}
-	//------------------Конструктор копирования------------------
-	MArray (const MArray &a) //передача по ссылке, const "защищает" от изменений
+	
+	MArray (const MArray &a) 
 	{
 		Size=a.Size;
 		Arr=new int [Size];
@@ -182,7 +182,7 @@ struct MArray //объявление структуры массив
 		Arr[i]=a.Arr[i];
 	}
 	//-----------------------------------------------------------------
-	MArray& operator=(const MArray &b) //перезагрузка оператора присвания
+	MArray& operator=(const MArray &b) 
 	{
 		if(&b!=this)
 		{
@@ -194,8 +194,8 @@ struct MArray //объявление структуры массив
 		}
 		return *this;
 	}
-	//-----------------------------------------------------------------
-	// Перегрузка операторов сравнения
+	
+	
 	int operator>(MArray &right)		
 	{
 	
@@ -257,38 +257,38 @@ struct list
 		list *next;
 	};
 template <class T>
-list <T> *Ins_first(list <T> *head,T n) // Включение в начало
+list <T> *Ins_first(list <T> *head,T n) 
 	{
-		list <T> *g=new list<T>; //создание нового элемента списка
-		g->data=n; //запомнить данные
-		if(head!=NULL) g->next=head; //если список не пуст, вставить в начало
-		else g->next=NULL; //иначе это будет первый элемент списка
-		return g; //вернуть новую голову списка
+		list <T> *g=new list<T>; 
+		g->data=n; 
+		if(head!=NULL) g->next=head; 
+		else g->next=NULL; 
+		return g; 
 	}
 template <class T>
 void Print_list(list <T> *head) //Печать списка
 	{
 		list <T> *t=head;
 		cout << endl << endl << "Massiv:  ";
-		while(t!=NULL) //Перебор пока не достигнем конца списка
+		while(t!=NULL) 
 		{
 			cout << t->data;
-			t=t->next; //переход к след элементу
+			t=t->next; 
 			if(t != NULL)
 				cout << "  -->  ";
 		}
 	}
 template <class T>
-list <T>*Ins_end(list <T>*head,T n)  //Включение в конец
+list <T>*Ins_end(list <T>*head,T n) 
 	{
-		list <T> *q=new list <T>,*t=head; //создание нового элемента списка
-		q->data=n; //запомнить данные
-		q->next=NULL; //следующего элемента нет
-		if(head==NULL)return q; //Если это первый элемент в списке, вернуть его
-		while(t->next!=NULL) //перебор пока не будет найден последний элемент
-		t=t->next; //переход к след элементу
-		t->next=q; //Дописать элемент в хвост списка
-		return head; //и вернуть старую голову
+		list <T> *q=new list <T>,*t=head;
+		q->data=n; 
+		q->next=NULL; 
+		if(head==NULL)return q; 
+		while(t->next!=NULL) 
+		t=t->next; 
+		t->next=q; 
+		return head; 
 	}
 template <class T>
 list <T> *Create_list(list<T>* first)
@@ -296,113 +296,113 @@ list <T> *Create_list(list<T>* first)
 		T num;
 		int i=0;
 		puts("Vvodi chisla.(0-konez vvoda)");
-		while (i<1) //Цикл ввода чисел
+		while (i<1) 
 		{
 			cin>>num;
-			first=Ins_end(first,num); //добавление в хвост
+			first=Ins_end(first,num); 
 			i++;
 		}
-		return first; //вернуть голову
+		return first; 
 	}
 template <class T>
-list <T> *Del_first(list<T>*head) //Удаление из начала списка
+list <T> *Del_first(list<T>*head) 
 	{
 		list <T> *t; 
-		if(head==NULL) //если список пуст
+		if(head==NULL) 
 		{
-			puts("Spisok pust"); //вывести сообщение
-			return NULL; //и вернуть 0
+			puts("Spisok pust"); 
+			return NULL; 
 		}
-		if(head->next==NULL) //Если в списке один элемент
+		if(head->next==NULL) 
 		{
-			delete head; //удалить его
-			return NULL; //и вернуть 0
+			delete head; 
+			return NULL; 
 		}
-		t=head->next; //иначе новой головой будет следующий за ней эдемент
-		delete head; //удалить старую голову
-		return t; //и вернуть новую
+		t=head->next; 
+		delete head; 
+		return t; 
 	}
 template <class T>
-list <T> *Del_end(list <T> *head) //Удаление из конца списка
+list <T> *Del_end(list <T> *head) 
 	{
 		list <T> *t;
-		if(head==NULL) //если список пуст
+		if(head==NULL) 
 		{
-			puts("Spisok pust"); //вывести сообщение
-			return NULL; //и вернуть 0
+			puts("Spisok pust"); 
+			return NULL; 
 		}
-		if(head->next==NULL) //Если в списке один элемент
+		if(head->next==NULL) 
 		{
-			delete head; //удалить его
-			return NULL; //и вернуть 0
+			delete head; 
+			return NULL; 
 		}
 		t=head;
-		//Поиск предпоследнего элемента
-		while (t->next->next!=NULL) //перебор пока не будет найден предпоследний элемент
-		t=t->next; //перейти к следующему
-		delete t->next; //удалить последний элемент
-		t->next=NULL; //сделать его последним
-		return head; //вернуть голову списка
+		
+		while (t->next->next!=NULL) 
+		t=t->next;
+		delete t->next; 
+		t->next=NULL; 
+		return head; 
 	}
 template <class T>
-list <T> *Del_znach(list <T> *head,T n) //Удаление по значению
+list <T> *Del_znach(list <T> *head,T n) 
 	{
 		list <T> *t,*y;
-		if(head == NULL) //если список пуст
+		if(head == NULL) 
 		{
-			puts("Spisok pust"); //вывести сообщение
-			return NULL; //и вернуть 0
+			puts("Spisok pust"); 
+			return NULL; 
 		}
-		if(head->next == NULL) //Если в списке один элемент
+		if(head->next == NULL) 
 		{
-			delete head; //удалить его
-			return NULL; //и вернуть 0
+			delete head; 
+			return NULL; 
 		}
-		if(head->data == n) //если удаляемое значение в голове
+		if(head->data == n) 
 		{
-			t=head->next; //новой головой будет следующий за ней элемент
-			delete head; //удалить старую голову
-			return t; //и вернуть новую
+			t=head->next; 
+			delete head; 
+			return t; 
 		}
 		t=head;
-		//Поиск элемента по значению
-		while(t->next!=NULL) //пока не достигнем конца списка
-		if(t->next->data==n) //если данный найдены в следующем элементе
+		
+		while(t->next!=NULL) 
+		if(t->next->data==n) 
 		{
-			y=t->next; //запомнить его указатель
-			t->next=t->next->next; //убрать его из списка
-			delete y; //и удалить из памяти
-			return head;//вернуть голову
+			y=t->next; 
+			t->next=t->next->next; 
+			delete y; 
+			return head;
 		}
 		else
-		t=t->next; //иначе переход к следующему элементу
-		puts("Znachenie net v spiske"); //если дошли сюда, то не нашли
-		return head; //вернуть голову
+		t=t->next; 
+		puts("Znachenie net v spiske"); 
+		return head; 
 	}
 template <class T>
-list <T> *Ins_Sort(list <T> *head, T n) //Включение с сохранением упорядоченности 
+list <T> *Ins_Sort(list <T> *head, T n) 
 	{
-	list <T> *q=new list <T>, *t; //создание нового элемента списка
-	q->data=n; //запомнить данные
-	q->next=NULL; //обнулить указатель на след элемент
-	if(head==NULL) return q; //Если это первый элемент в списке, вернуть его
-	if(head->data>q->data) //Если его нужно вставлять в голову списка
+	list <T> *q=new list <T>, *t; 
+	q->data=n; 
+	q->next=NULL; 
+	if(head==NULL) return q; 
+	if(head->data>q->data) 
 	{
-		q->next=head; //то вставить в голову
-		return q; //и вернуть новую голову
+		q->next=head; 
+		return q; 
 	}
 	t=head;
-	//ищем место вставки
-	while(t->next!=NULL) //Перебор пока не достигнем конца списка
-	if(t->next->data>q->data) //Если нашли место вставки
+	
+	while(t->next!=NULL) 
+	if(t->next->data>q->data) 
 	{
-		q->next=t->next; //вставляем
+		q->next=t->next; 
 		t->next=q;
-		return head; //и возвращаем старую голову
+		return head; 
 	}
-	else t=t->next; //иначе переходим к след элементу
-	t->next=q; //Если дошли сюда, то вставляем в конец списка
-	return head; //и возвращаем старую голову
+	else t=t->next; 
+	t->next=q; 
+	return head; 
 }
 void menuList()
 {
